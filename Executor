@@ -1,6 +1,6 @@
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
-local screenGui = Instance.new("CoreGui")
+local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player.PlayerGui
 
 -- Button that stays at the bottom
