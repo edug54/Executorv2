@@ -1,0 +1,121 @@
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player.PlayerGui
+
+-- Button that stays at the bottom
+local mainButton = Instance.new("TextButton")
+mainButton.Size = UDim2.new(0, 100, 0, 50)
+mainButton.Position = UDim2.new(0.5, -50, 1, -60)
+mainButton.Text = "Main Button"
+mainButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+mainButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+mainButton.Parent = screenGui
+
+-- Frame that will show up next to the button
+local executorFrame = Instance.new("Frame")
+executorFrame.Size = UDim2.new(0, 300, 0, 150)
+executorFrame.Position = UDim2.new(0.5, 100, 1, -60)
+executorFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+executorFrame.Visible = false
+executorFrame.Parent = screenGui
+
+-- UI corner
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 10)
+uiCorner.Parent = executorFrame
+
+-- Executor Button
+local executorButton = Instance.new("TextButton")
+executorButton.Size = UDim2.new(0, 100, 0, 50)
+executorButton.Position = UDim2.new(0.5, -50, 0, 10)
+executorButton.Text = "Executor"
+executorButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+executorButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+executorButton.Parent = executorFrame
+
+-- TextBox for code input
+local codeTextBox = Instance.new("TextBox")
+codeTextBox.Size = UDim2.new(0, 200, 0, 30)
+codeTextBox.Position = UDim2.new(0.5, -100, 0, 70)
+codeTextBox.Text = ""
+codeTextBox.PlaceholderText = "Enter code..."
+codeTextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+codeTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+codeTextBox.ClearTextOnFocus = true
+codeTextBox.Parent = executorFrame
+
+-- Execute Button
+local executeButton = Instance.new("TextButton")
+executeButton.Size = UDim2.new(0, 100, 0, 50)
+executeButton.Position = UDim2.new(0.5, -50, 1, -50)
+executeButton.Text = "Execute"
+executeButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+executeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+executeButton.Parent = executorFrame
+
+-- Draggable functionality
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+mainButton.MouseButton1Down:Connect(function()
+    dragging = true
+    dragStart = mouse.Position
+    startPos = mainButton.Position
+end)
+
+mouse.Move:Connect(function()
+    if dragging then
+        local delta = mouse.Position - dragStart
+        mainButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+mainButton.MouseButton1Up:Connect(function()
+    dragging = false
+end)
+
+-- Handle main button click
+local mainButtonClicked = false
+mainButton.MouseButton1Click:Connect(function()
+    if mainButtonClicked then
+        -- Hide everything if clicked again
+        executorFrame.Visible = false
+    else
+        -- Show executor frame if first click
+        executorFrame.Visible = true
+    end
+    mainButtonClicked = not mainButtonClicked
+end)
+
+-- Handle executor button click
+local executorButtonClicked = false
+executorButton.MouseButton1Click:Connect(function()
+    if executorButtonClicked then
+        -- Hide the iframe
+        codeTextBox.Visible = false
+        executeButton.Visible = false
+    else
+        -- Show the iframe
+        codeTextBox.Visible = true
+        executeButton.Visible = true
+    end
+    executorButtonClicked = not executorButtonClicked
+end)
+
+-- Handle Execute button click
+executeButton.MouseButton1Click:Connect(function()
+    local code = codeTextBox.Text
+    if code:match("^%s*loadstring") then
+        local func, err = loadstring(code)
+        if func then
+            -- Execute the code
+            pcall(func)
+        else
+            print("Error in code: " .. err)
+        end
+    else
+        print("Invalid code entered. Only loadstring is allowed.")
+    end
+end)
