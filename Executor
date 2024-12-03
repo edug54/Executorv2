@@ -1,6 +1,6 @@
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
-local screenGui = Instance.new("ScreenGui")
+local screenGui = Instance.new("CoreGui")
 screenGui.Parent = player.PlayerGui
 
 -- Button that stays at the bottom
@@ -43,6 +43,7 @@ codeTextBox.PlaceholderText = "Enter code..."
 codeTextBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 codeTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 codeTextBox.ClearTextOnFocus = true
+codeTextBox.Visible = false
 codeTextBox.Parent = executorFrame
 
 -- Execute Button
@@ -52,6 +53,7 @@ executeButton.Position = UDim2.new(0.5, -50, 1, -50)
 executeButton.Text = "Execute"
 executeButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 executeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+executeButton.Visible = false
 executeButton.Parent = executorFrame
 
 -- Draggable functionality
@@ -93,11 +95,11 @@ end)
 local executorButtonClicked = false
 executorButton.MouseButton1Click:Connect(function()
     if executorButtonClicked then
-        -- Hide the iframe
+        -- Hide the iframe (Textbox and Execute button)
         codeTextBox.Visible = false
         executeButton.Visible = false
     else
-        -- Show the iframe
+        -- Show the iframe (Textbox and Execute button)
         codeTextBox.Visible = true
         executeButton.Visible = true
     end
